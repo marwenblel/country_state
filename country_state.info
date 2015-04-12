@@ -1,0 +1,8 @@
+name = Country state
+description = This module allows administrators to define field type location (country and state)
+package = field
+dependencies[] = field
+
+core = 7.x
+files[] = country_state.install
+files[] = country_state.module
