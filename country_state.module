@@ -42,15 +42,14 @@ function country_state_field_settings_form ($field, $instance, $has_data) {
  */
 function country_state_field_widget_form (&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
 
-    //drupal_set_message("Save items:<pre>" . print_r($items, TRUE) . '</pre>');
 
     switch($instance['widget']['type']) {
         case 'country_state_field':
-            $element['#tree'] = TRUE;
+           /* $element['#tree'] = TRUE;
             $element['country_state'] = array(
                 '#type'  => 'fieldset',
                 '#title' => $element['#title'],
-            );
+            );*/
            // get all countries from location vocabulary
             $countries = array();
             $location_vocabulary = taxonomy_vocabulary_machine_name_load('location');
@@ -62,11 +61,11 @@ function country_state_field_widget_form (&$form, &$form_state, $field, $instanc
             }
 
 
-            $default_country = isset($items[$delta]['country_state']['country']) ? $items[$delta]['country_state']['country'] : '';
-            $selected_country = isset($form_state['values'][$field['field_name']][$langcode][$delta]['country_state']['country']) ? $form_state['values'][$field['field_name']][$langcode][$delta]['country_state']['country'] : $default_country;
+            $default_country = isset($items[$delta]['country']) ? $items[$delta]['country'] : '';
+            $selected_country = isset($form_state['values'][$field['field_name']][$langcode][$delta]['country']) ? $form_state['values'][$field['field_name']][$langcode][$delta]['country'] : $default_country;
             //echo $selected_country;
 
-            $element['country_state']['country'] = array(
+            $element['country'] = array(
                 '#type'  => 'select',
                 '#title' => t('Country'),
                 '#options' => $countries,
@@ -74,15 +73,15 @@ function country_state_field_widget_form (&$form, &$form_state, $field, $instanc
                 '#description'   => t('Select your country.'),
                 '#ajax' => array(
                     'callback' => 'ajax_example_dependent_dropdown_callback',
-                    'wrapper' => 'dropdown-states',
+                    'wrapper' => 'dropdown-states-'.$delta,
                 ),
             );
-            $default_state = isset($items[$delta]['country_state']['state']) ? $items[$delta]['country_state']['state'] : '';
+            $default_state = isset($items[$delta]['state']) ? $items[$delta]['state'] : '';
 
-            $element['country_state']['state'] = array(
+            $element['state'] = array(
                 '#type'  => 'select',
                 '#title' => t('State'),
-                '#prefix' => '<div id="dropdown-states">',
+                '#prefix' => '<div id="dropdown-states-'.$delta.'">',
                 '#suffix' => '</div>',
                 '#options' => _ajax_example_get_second_dropdown_options($selected_country),
                 '#default_value' => $default_state,
@@ -157,10 +156,22 @@ function _ajax_example_get_second_dropdown_options($key = '') {
  */
 function country_state_field_presave ($entity_type, $entity, $field, $instance, $langcode, &$items) {
     foreach ($items as $delta => $item) {
-            $items[$delta]['country'] = $item['country_state']['country'];
-            $items[$delta]['state']   = $item['country_state']['state'];
+
+
+           $items[$delta]['country'] = $item['country'];
+           $items[$delta]['state']   = $item['state'];
     }
-   //drupal_set_message("Save items:<pre>" . print_r($items, TRUE) . '</pre>');
+   //drupal_set_message("Save items:<pre>" . print_r($entity, TRUE) . '</pre>');
+}
+
+
+function country_state_form_alter(&$form, &$form_state, $form_id) {
+   if ($form_id == 'article_node_form') {
+       //node_load(57)
+       //$form['#entity']->field_link['und'][0]['url'] = 'testtttttt';
+      //drupal_set_message("Save items:<pre>" . print_r($form['#entity']->field_link['und'][0], TRUE) . '</pre>');
+
+   }
 }
 /**
  * Implements hook_field_is_empty().
