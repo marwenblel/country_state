@@ -1,6 +1,7 @@
 (function($) {
     Drupal.behaviors.country_state = {
         attach: function (context, settings) {
+            $("select[name='state']").html('<option value="All">--ANY--</option>');
 
             $( "select[name='country']" ).change(function() {
                 // Get selected country

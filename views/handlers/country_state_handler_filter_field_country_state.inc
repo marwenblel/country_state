@@ -23,19 +23,20 @@ class country_state_handler_filter_field_country_state extends views_handler_fil
 
         $countries = _prepare_countries_list();
         $selected_country = isset($form_state['values']['value']['country'])?$form_state['values']['value']['country']:key($countries);
-
+        $selected_state  =  isset($form_state['values']['value']['state'])?$form_state['values']['value']['state']:'';
         $values = array(
             'country' => array(
-                '#type'    => 'select',
-                '#title'   => t('Country'),
-                '#options' => $countries,
+                '#type'          => 'select',
+                '#title'         => t('Country'),
+                '#options'       => $countries,
             ),
             'state' => array(
                 '#type'    => 'select',
                 '#title'   => t('State'),
-                '#prefix' => '<div id="dropdown-states">',
-                '#suffix' => '</div>',
-                //'#options' => array(),
+                '#prefix'  => '<div id="dropdown-states">',
+                '#suffix'  => '</div>',
+                '#options' => array('All' => t('--ANY--')),
+                '#validated' => TRUE
             ),
         );
         $form['value'] = $values;
@@ -105,7 +106,7 @@ class country_state_handler_filter_field_country_state extends views_handler_fil
 
 
     function op_equal($field) {
-        
+
 
         $field_country = 'field_data_field_location.'.$this->definition['additional fields'][0];
         $field_state   = 'field_data_field_location.'.$this->definition['additional fields'][1];
